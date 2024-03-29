@@ -1,7 +1,14 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
 from core.db import Base
+
+
 from fastapi_utils.guid_type import GUID, GUID_DEFAULT_SQLITE
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped
+
+
+from api.validators.post_validators import Post
 
 
 class UserModel(Base):
@@ -23,7 +30,8 @@ class UserModel(Base):
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
 
-    posts = relationship('PostModel', back_populates='owner')
+    posts: list['Post'] = relationship(
+        'PostModel', back_populates='owner')
 
 
 class PostModel(Base):
