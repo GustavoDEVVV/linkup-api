@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from api.validators.post_validators import PostCreate
 
 from core.db import Base, engine
-from api.crud.post_crud import select_posts
+from api.crud.post_crud import select_posts, insert_post
 from api.deps import get_db
 
 Base.metadata.create_all(bind=engine)
@@ -13,7 +14,12 @@ router = APIRouter(
 )
 
 
-@router.get('/{user_id}/posts/')
-async def get_posts(user_id: int, db: Session = Depends(get_db)):
-    posts = select_posts(db, user_id=user_id)
+@router.get('/{username}/posts/')
+async def get_posts(username: str, db: Session = Depends(get_db)):
+    posts = select_posts(db, username=username)
     return posts
+
+
+@router.post('/{username}/posts/')
+async def post_post(username: str, post: PostCreate,  db: Session = Depends(get_db)):
+    return insert_post(db=db, post=post, username=username)
