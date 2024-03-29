@@ -15,9 +15,9 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: str
-    posts: list[Post] = []
     is_active: bool = True
     is_admin: bool = False
+    posts: list[Post] = []
 
     class Config:
         from_attributes = True

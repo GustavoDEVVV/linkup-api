@@ -3,15 +3,16 @@ from pydantic import BaseModel
 
 class PostBase(BaseModel):
     title: str
-    description: str
+    description: str | None = None
 
 
 class PostCreate(PostBase):
-    pass
+    def model_dump(self):
+        return dict(self)
 
 
 class Post(PostBase):
-    id: int
+    id: str
     owner_username: str
 
     class Config:
