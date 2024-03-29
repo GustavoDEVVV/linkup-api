@@ -1,13 +1,17 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from core.db import Base
+from fastapi_utils.guid_type import GUID, GUID_DEFAULT_SQLITE
 
 
 class UserModel(Base):
     __tablename__ = 'users'
 
-    id = Column(String(36), primary_key=True)
-    slug = Column(String(7))
+    id = Column(
+        GUID,
+        primary_key=True,
+        default=GUID_DEFAULT_SQLITE
+    )
 
     username = Column(String(50), unique=True)
     first_name = Column(String(50))
@@ -25,9 +29,13 @@ class UserModel(Base):
 class PostModel(Base):
     __tablename__ = 'posts'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(
+        GUID,
+        primary_key=True,
+        default=GUID_DEFAULT_SQLITE
+    )
     title = Column(String(35), index=True)
     description = Column(String(255), index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner_username = Column(String(50), ForeignKey("users.username"))
 
     owner = relationship('UserModel', back_populates='posts')
