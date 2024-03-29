@@ -1,6 +1,6 @@
-# from sqlalchemy.orm import Session
-# from api.models.user_models import UserModel
+from sqlalchemy.orm import Session
+from api.models import PostModel
 
 
-# def select_users(db: Session, skip: int = 0, limit: int = 100):
-#     return db.query(UserModel).offset(skip).limit(limit).all()
+def select_posts(db: Session, user_id: int):
+    return db.query(PostModel).filter(PostModel.owner_id == user_id).all()
