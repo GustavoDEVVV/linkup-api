@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
 
 from core.db import Base, engine
 from api.crud.user_crud import (
@@ -8,8 +7,7 @@ from api.crud.user_crud import (
     select_user_by_username,
     select_user_by_email
 )
-from api.validators.user_validators import User, UserCreate, UserBase
-from api.validators.post_validators import Post
+from api.validators.user_validators import UserCreate
 from api.deps import get_db
 
 Base.metadata.create_all(bind=engine)
