@@ -1,11 +1,13 @@
 from core.db import Base
 
 
-from fastapi_utils.guid_type import GUID, GUID_DEFAULT_SQLITE
+import uuid
+from fastapi_utils.guid_type import GUID_DEFAULT_SQLITE, GUID
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import Mapped
+from api.deps import generate_small_uuid
 
 
 from api.validators.post_validators import Post
@@ -42,6 +44,13 @@ class PostModel(Base):
         primary_key=True,
         default=GUID_DEFAULT_SQLITE
     )
+
+    slug = Column(
+        String(8),
+        unique=True,
+        default=generate_small_uuid
+    )
+
     title = Column(String(35), index=True)
     description = Column(String(255), index=True)
     owner_username = Column(String(50), ForeignKey("users.username"))

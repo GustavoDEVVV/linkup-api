@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from api.validators.post_validators import PostCreate
 
 from core.db import Base, engine
+from api.validators.post_validators import PostCreate
 from api.crud.post_crud import select_posts, insert_post
 from api.deps import get_db
 
