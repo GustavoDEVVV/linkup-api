@@ -13,6 +13,7 @@ class PostCreate(PostBase):
 
 class Post(PostBase):
     id: str
+    slug: str
     owner_username: str
 
     class Config:

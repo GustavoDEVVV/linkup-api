@@ -1,4 +1,5 @@
 from core.db import SessionLocal
+import uuid
 
 
 def get_db():
@@ -7,3 +8,7 @@ def get_db():
         yield database
     finally:
         database.close()
+
+
+def generate_small_uuid() -> str:
+    return str(uuid.uuid4())[:8]
