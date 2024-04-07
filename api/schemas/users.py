@@ -1,17 +1,33 @@
 from pydantic import BaseModel
 
 
-class UserSchema(BaseModel):
-    id: int
-    username: str
+class UserBase(BaseModel):
     email: str
-    full_name: str | None = None
-    disabled: bool | None = None
+    username: str
+
+
+class UserCreate(UserBase):
+    password: str
+
+
+class UserOutPut(UserBase):
+    id: int
+
+
+class User(UserBase):
+    id: int
+    disabled: bool = False
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# Criar um usuário no formato User.
+
+class UserInDB(User):
+    hashed_password: str
+
+
+# Criar um usuário no form
+# ato User.
 
 # user_data = {
 # "id": 4,
