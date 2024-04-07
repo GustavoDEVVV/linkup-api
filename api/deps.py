@@ -1,5 +1,6 @@
-from core.db import SessionLocal
-import uuid
+from core.database import SessionLocal
+from sqlalchemy.orm import Session  # type: ignore
+from typing import Annotated
 
 
 def get_db():
@@ -10,5 +11,4 @@ def get_db():
         database.close()
 
 
-def generate_small_uuid() -> str:
-    return str(uuid.uuid4())[:8]
+SessionDep = Annotated[Session, get_db]
