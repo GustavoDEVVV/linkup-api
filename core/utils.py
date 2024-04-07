@@ -1,8 +1,8 @@
 from core.security import SECRET_KEY, ALGORITHM, oauth2_scheme
-from api.crud.users import select_user_by_username
+from api.crud.users import get_user_by_username
 from api.schemas.token import Token, TokenData
 from core.security import pwd_context
-from api.schemas.users import UserSchema
+from api.schemas.users import User
 from fastapi import Depends, HTTPException, status
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
@@ -15,12 +15,8 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-
 def authenticate_user(username: str, password: str, session: Session):
-    user = select_user_by_username(session, username)
+    user = get_user_by_username(session, username)
 
     if not user:
         return False
@@ -36,7 +32,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=[ALGORITHM])
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
@@ -54,7 +50,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = select_user_by_username(
+    user = get_user_by_username(
         db=Depends(get_db),
         username=token_data.username
     )
@@ -63,7 +59,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     return user
 
 
-async def get_current_active_user(current_user: Annotated[UserSchema, Depends(get_current_user)]):
+async def get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail='Inactive user')
     return current_user
