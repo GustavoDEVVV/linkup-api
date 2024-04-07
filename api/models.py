@@ -56,3 +56,22 @@ class PostModel(Base):
     owner_username = Column(String(50), ForeignKey("users.username"))
 
     owner = relationship('UserModel', back_populates='posts')
+
+
+class LikeModel(Base):
+    __tablename__ = 'likes'
+
+    postId = Column(
+        GUID,
+        ForeignKey("posts.id"),
+        primary_key=True
+    )
+
+    userId = Column(
+        GUID,
+        ForeignKey("users.id"),
+        primary_key=True
+    )
+    
+    user = relationship('UserModel', backref='likes')
+    post = relationship('PostModel', backref='likes')
