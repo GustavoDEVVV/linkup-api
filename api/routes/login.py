@@ -9,14 +9,14 @@ from core.utils import create_access_token
 from core.security import ACCESS_TOKEN_EXPIRE_MINUTES
 from api.schemas.token import Token
 from core.utils import authenticate_user
-from api.deps import get_db, SessionDep
+from api.deps import get_db
 
 router = APIRouter()
 
 
 @router.post('/token')
 async def login_for_access_token(
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep = Depends(get_db)) -> Token:
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: Session = Depends(get_db)) -> Token:
     user = authenticate_user(session, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
