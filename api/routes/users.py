@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session  # type: ignore
 
 from api.deps import get_db
 from api.schemas.users import UserCreate, UserOutPut
-from core.utils import get_current_active_user
+from core.utils import get_current_active_user, get_current_active_superuser
 from api.crud.users import get_user, get_user_by_username, create_user
 from core.config import settings
 
@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.post('/', dependencies=[Depends(get_current_active_user)])
+@router.post('/', dependencies=[Depends(get_current_active_superuser)])
 async def create_new_user(user: UserCreate, session: Session = Depends(get_db)):
     db_user = get_user_by_username(session=session, username=user.username)
     if db_user:
@@ -20,7 +20,7 @@ async def create_new_user(user: UserCreate, session: Session = Depends(get_db)):
     return create_user(session, user)
 
 
-@router.get('/{user_id}', response_model=UserOutPut, dependencies=[Depends(get_current_active_user)])
+@router.get('/{user_id}', response_model=UserOutPut, dependencies=[Depends(get_current_active_superuser)])
 async def read_user(user_id: int, session: Session = Depends(get_db)):
     db_user = get_user(session=session, user_id=user_id)
     if db_user is None:
