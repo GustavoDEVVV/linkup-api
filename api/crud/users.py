@@ -3,11 +3,15 @@ from api.models.users import UserModel
 from api.schemas.users import UserCreate
 from core.security import get_password_hash
 from fastapi import Depends
-from api.deps import get_db
+from core.database import get_db
 
 
 def get_user_by_username(username: str, session: Session = Depends(get_db)):
     return session.query(UserModel).filter(UserModel.username == username).first()
+
+
+def get_user_by_email(email: str, session: Session = Depends(get_db)):
+    return session.query(UserModel).filter(UserModel.email == email).first()
 
 
 def get_user(session: Session, user_id: int):
