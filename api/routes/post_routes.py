@@ -23,3 +23,8 @@ async def get_posts(username: str, db: Session = Depends(get_db)):
 @router.post('/{username}/posts/')
 async def post_post(username: str, post: PostCreate,  db: Session = Depends(get_db)):
     return insert_post(db=db, post=post, username=username)
+
+
+@router.delete('/{username}/post/')
+async def delete_post(username: str, post: PostCreate, db: Session = Depends(get_db)):
+    return delete_post(db=db, delete=post, username=username) 
