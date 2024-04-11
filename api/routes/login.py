@@ -5,13 +5,15 @@ from sqlalchemy.orm import Session  # type: ignore
 from datetime import timedelta
 from fastapi import APIRouter
 
-from core.utils import create_access_token
-from core.security import ACCESS_TOKEN_EXPIRE_MINUTES
+# from core.security import create_access_token
+from core.security import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from api.schemas.token import Token
-from core.utils import authenticate_user
-from api.deps import get_db
+from api.crud.login import authenticate_user
+from core.database import get_db
 
-router = APIRouter()
+router = APIRouter(
+    tags=['token']
+)
 
 
 @router.post('/token')
