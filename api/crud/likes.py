@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session  # type: ignore
+from sqlalchemy.orm import Session
 from api.models.likes import LikeModel
 from api.models.users import UserModel
 from api.schemas.likes import LikeCreate

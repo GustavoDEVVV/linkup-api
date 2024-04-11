@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session  # type: ignore
+from sqlalchemy.orm import Session
 from api.models.posts import PostModel
 from api.schemas.posts import PostCreate
 

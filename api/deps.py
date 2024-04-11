@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, status
-from sqlalchemy.orm import Session  # type: ignore
-from jose import JWTError, jwt  # type: ignore
+from sqlalchemy.orm import Session
+from jose import JWTError, jwt
 from typing import Annotated
 
 from core.security import oauth2_scheme, ALGORITHM, SECRET_KEY

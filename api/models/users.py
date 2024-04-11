@@ -1,7 +1,7 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String  # type: ignore
-from sqlalchemy.orm import relationship   # type: ignore
-
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 from core.database import Base, generate_small_uuid
+from api.models.posts import PostModel
 
 
 class UserModel(Base):

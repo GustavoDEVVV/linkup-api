@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session  # type: ignore
+from sqlalchemy.orm import Session
 
 from api.deps import get_current_active_superuser, CurrentUser, get_current_active_user
 from api.schemas.users import UserCreate, UserOutPut, UserUpdateMe

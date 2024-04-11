@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session  # type: ignore
-
+from sqlalchemy.orm import Session
 from core.database import get_db
 
 from api.deps import get_current_active_superuser, CurrentUser, get_current_active_user

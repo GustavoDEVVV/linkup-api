@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session  # type: ignore
+from sqlalchemy.orm import Session
 from api.schemas.likes import LikeCreate
 from api.crud.likes import create_like, get_likes_by_post_id, delete_like
 from api.deps import get_db

@@ -1,5 +1,5 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, CheckConstraint  # type: ignore
-from sqlalchemy.orm import relationship   # type: ignore
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, CheckConstraint
+from sqlalchemy.orm import relationship
 from core.database import Base
 from core.database import generate_small_uuid
 
