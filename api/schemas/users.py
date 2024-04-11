@@ -23,11 +23,11 @@ class UserCreate(UserBase):
 
 
 class UserOutPut(UserBase):
-    id: int
+    id: str
 
 
 class User(UserBase):
-    id: int
+    id: str
     disabled: bool = False
     is_superuser: bool = False
     posts: list[Post]
