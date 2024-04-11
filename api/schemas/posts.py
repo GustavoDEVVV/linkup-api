@@ -7,13 +7,10 @@ class PostBase(BaseModel):
 
 
 class PostCreate(PostBase):
-    def model_dump(self):
-        return dict(self)
-
+    pass
 
 class Post(PostBase):
-    id: str
-    slug: str
+    id: int
     owner_username: str
 
     class Config:

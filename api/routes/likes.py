@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from api.validators.like_validators import LikeCreate
-from api.crud.like_crud import create_like, get_likes_by_post_id, delete_like
+from api.crud.likes import create_like, get_likes_by_post_id, delete_like
 from api.deps import get_db
 
 router = APIRouter(prefix='/likes', tags=['likes'])
