@@ -1,13 +1,14 @@
-from sqlalchemy.orm import Session
-from api.models import LikeModel, UserModel
-from api.validators.like_validators import LikeCreate
+from sqlalchemy.orm import Session  # type: ignore
+from api.models.likes import LikeModel
+from api.models.users import UserModel
+from api.schemas.likes import LikeCreate
 
 
-def create_like(db: Session, post_id: str, user_id: str):
-    like = LikeModel(postId=post_id, userId=user_id)
-    db.add(like)
-    db.commit()
-    db.refresh(like)
+def create_like(session: Session, post_id: str, user_id: str, reaction: str):
+    like = LikeModel(postId=post_id, userId=user_id, reaction=reaction)
+    session.add(like)
+    session.commit()
+    session.refresh(like)
     return like
 
 
