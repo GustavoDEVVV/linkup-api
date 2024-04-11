@@ -1,15 +1,39 @@
-from fastapi import Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from jose import JWTError, jwt
-from typing import Annotated
-
-from core.security import oauth2_scheme, ALGORITHM, SECRET_KEY
-
-from api.schemas.users import User
-from api.models.users import UserModel
-from api.schemas.token import TokenData
+from core.security import SECRET_KEY, ALGORITHM, oauth2_scheme
 from api.crud.users import get_user_by_username
-from core.database import get_db
+from api.schemas.token import TokenData
+from core.security import pwd_context
+from api.schemas.users import User
+from fastapi import Depends, HTTPException, status
+from datetime import timedelta, datetime, timezone
+from typing import Annotated
+from jose import JWTError, jwt
+from sqlalchemy.orm import Session
+from api.deps import get_db
+
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def authenticate_user(username: str, password: str, session: Session):
+    user = get_user_by_username(session, username)
+
+    if not user:
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
+    return user
+
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: Session = Depends(get_db)):
@@ -33,13 +57,14 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], sessio
         raise credentials_exception
     return user
 
-CurrentUser = Annotated[UserModel, Depends(get_current_user)]
-
 
 async def get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail='Inactive user')
     return current_user
+
+
+CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
 def get_current_active_superuser(current_user: CurrentUser) -> User:
