@@ -1,13 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session  # type: ignore
-from typing import Any
 
 from core.database import get_db
-from api.deps import get_current_active_superuser, CurrentUser, get_current_active_user
-from api.schemas.users import UserCreate, UserOutPut, UserUpdateMe
-from api.crud.users import get_user_by_username, create_user
-from core.config import settings
-# from api.models.users import UserModel
+
 from api.crud.posts import select_posts, insert_post
 from api.schemas.posts import PostCreate
 
