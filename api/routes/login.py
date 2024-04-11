@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session  # type: ignore
 from datetime import timedelta
 from fastapi import APIRouter
 
-# from core.security import create_access_token
 from core.security import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from api.schemas.token import Token
 from api.crud.login import authenticate_user

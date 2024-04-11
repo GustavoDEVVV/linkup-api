@@ -1,5 +1,4 @@
 from fastapi import Depends, HTTPException, status
-from core.database import SessionLocal
 from sqlalchemy.orm import Session  # type: ignore
 from jose import JWTError, jwt  # type: ignore
 from typing import Annotated

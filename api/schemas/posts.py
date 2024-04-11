@@ -8,9 +8,6 @@ class PostBase(BaseModel):
 
 class PostCreate(PostBase):
     pass
-    # def model_dump(self):
-    #     return dict(self)
-
 
 class Post(PostBase):
     id: int
