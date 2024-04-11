@@ -19,3 +19,10 @@ def insert_post(session: Session, username: str, post: PostCreate):
     session.refresh(db_post)
 
     return {"message": f"Post created"}
+
+
+def delete_post(db: Session, post: PostCreate, username: str):
+    db.delete(PostCreate)
+    db.refresh(PostCreate)
+
+    return{"message": "User's deleted post = {db_post.id}"}
