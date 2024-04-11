@@ -1,9 +1,21 @@
 from pydantic import BaseModel
+from api.schemas.posts import Post
+
+from api.schemas.posts import Post
 
 
 class UserBase(BaseModel):
     email: str
     username: str
+
+
+class UserCreateSuperUser(UserBase):
+    password: str
+    is_superuser: bool
+
+
+class UserUpdateMe(UserBase):
+    pass
 
 
 class UserCreate(UserBase):
@@ -17,6 +29,8 @@ class UserOutPut(UserBase):
 class User(UserBase):
     id: int
     disabled: bool = False
+    is_superuser: bool = False
+    posts: list[Post]
 
     class Config:
         from_attributes = True
@@ -25,14 +39,5 @@ class User(UserBase):
 class UserInDB(User):
     hashed_password: str
 
-
-# Criar um usuário no form
-# ato User.
-
-# user_data = {
-# "id": 4,
-# "name": "Mary",
-# "joined": "2018-11-30",
-# }
-
-# user: User = User(**user_data)
+    class Config:
+        from_attributes = True
