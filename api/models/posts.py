@@ -1,12 +1,16 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String  # type: ignore
 from sqlalchemy.orm import relationship   # type: ignore
-from core.database import Base
+from core.database import Base, generate_small_uuid
 
 
 class PostModel(Base):
     __tablename__ = 'posts'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(
+        String(8),
+        primary_key=True,
+        default=generate_small_uuid
+    )
     title = Column(String(50))
     description = Column(String(255))
     owner_username = Column(String(50), ForeignKey('users.username'))

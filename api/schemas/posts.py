@@ -9,8 +9,9 @@ class PostBase(BaseModel):
 class PostCreate(PostBase):
     pass
 
+
 class Post(PostBase):
-    id: int
+    id: str
     owner_username: str
 
     class Config:
