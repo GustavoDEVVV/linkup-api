@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from pydantic import BaseModel, validator
 from sqlalchemy.orm import Session
 from api.models import PostModel, UserModel
