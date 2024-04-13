@@ -54,4 +54,3 @@ def create_super_user(session: Session, user: UserCreateSuperUser):
 def delete_user(session: Session, user: UserModel):
     session.delete(user)
     session.commit()
-    session.refresh(user)
