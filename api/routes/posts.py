@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session  # type: ignore
-
+from sqlalchemy.orm import Session
 from core.database import get_db
 
+from api.deps import get_current_active_superuser, CurrentUser, get_current_active_user
 from api.crud.posts import select_posts, insert_post
 from api.schemas.posts import PostCreate
 
@@ -25,7 +25,7 @@ async def read_posts(username: str, session: Session = Depends(get_db)):
         return HTTPException(status_code=500, detail=str(e))
 
 
-@router.post('/{username}/posts')
+@router.post('/{username}/posts', dependencies=[Depends(get_current_active_user)])
 async def create_new_post(post: PostCreate, username: str, session: Session = Depends(get_db)):
     try:
         response = insert_post(session=session, post=post, username=username)

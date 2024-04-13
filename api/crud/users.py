@@ -1,8 +1,8 @@
-from sqlalchemy.orm import Session  # type: ignore
+from sqlalchemy.orm import Session
 from api.models.users import UserModel
-from api.schemas.users import UserCreate, UserUpdateMe, UserCreateSuperUser
+from api.schemas.users import UserCreate, UserCreateSuperUser
 from core.security import get_password_hash
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from core.database import get_db
 
 

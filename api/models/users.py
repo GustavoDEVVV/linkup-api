@@ -1,14 +1,17 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String  # type: ignore
-from sqlalchemy.orm import relationship   # type: ignore
-
-from core.database import Base
-from api.schemas.posts import Post
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+from core.database import Base, generate_small_uuid
+from api.models.posts import PostModel
 
 
 class UserModel(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(
+        String(8),
+        primary_key=True,
+        default=generate_small_uuid
+    )
 
     username = Column(String(50), unique=True)
     email = Column(String(50), unique=True)

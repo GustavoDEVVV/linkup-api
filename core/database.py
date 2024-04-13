@@ -1,8 +1,9 @@
-from sqlalchemy import create_engine  # type: ignore
-from sqlalchemy.ext.declarative import declarative_base  # type: ignore
-from sqlalchemy.orm import sessionmaker, Session  # type: ignore
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-from core.config import settings  # type: ignore
+from core.config import settings
+import uuid
 
 engine = create_engine(
     settings.SQLALCHEMY_DATABASE_URI,
@@ -24,3 +25,7 @@ def get_db():
         yield database
     finally:
         database.close()
+
+
+def generate_small_uuid() -> str:
+    return str(uuid.uuid4())[:8]

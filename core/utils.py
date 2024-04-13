@@ -1,13 +1,13 @@
 from core.security import SECRET_KEY, ALGORITHM, oauth2_scheme
 from api.crud.users import get_user_by_username
-from api.schemas.token import Token, TokenData
+from api.schemas.token import TokenData
 from core.security import pwd_context
 from api.schemas.users import User
 from fastapi import Depends, HTTPException, status
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
-from jose import JWTError, jwt  # type: ignore
-from sqlalchemy.orm import Session  # type: ignore
+from jose import JWTError, jwt
+from sqlalchemy.orm import Session
 from api.deps import get_db
 
 

@@ -1,7 +1,7 @@
-from passlib.context import CryptContext  # type: ignore
+from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta, timezone
-from jose import jwt, JWTError  # type: ignore
+from jose import jwt
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
