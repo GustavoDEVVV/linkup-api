@@ -6,7 +6,7 @@ from api.crud.posts import get_post_by_id
 from api.crud.users import get_user_by_username
 from api.deps import get_db
 
-router = APIRouter(prefix='/likes', tags=['likes'])
+router = APIRouter(prefix='/posts/{post_id}/likes', tags=['likes'])
 
 
 @router.post('/')
@@ -29,7 +29,7 @@ async def like_post(like_data: LikeCreate, session: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get('/{post_id}/')
+@router.get('/')
 async def get_likes_for_post(post_id: str, session: Session = Depends(get_db)):
     try:
         post = get_post_by_id(session, post_id=post_id)
