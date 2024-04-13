@@ -4,27 +4,40 @@ from api.schemas.likes import LikeCreate
 from api.crud.likes import create_like, get_likes_by_post_id, delete_like
 from api.crud.posts import get_post_by_id
 from api.crud.users import get_user_by_username
-from api.deps import get_db
+from api.deps import get_current_active_user, get_db, CurrentUser
 
 router = APIRouter(prefix='/posts/{post_id}/likes', tags=['likes'])
 
 
-@router.post('/')
-async def like_post(like_data: LikeCreate, session: Session = Depends(get_db)):
+@router.post('/', dependencies=[Depends(get_current_active_user)])
+async def post_like(
+    post_id: str,
+    data: LikeCreate,
+    current_user: CurrentUser,
+    session: Session = Depends(get_db),
+):
     try:
-        user = get_user_by_username(session, user_id=like_data.UserId)
-        post = get_post_by_id(session, post_id=like_data.PostId)
+        user_id = current_user.id
+        username = current_user.username
 
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
+        post = get_post_by_id(session=session, post_id=post_id)
+        user = get_user_by_username(session=session, username=username)
 
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
 
-        
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
         created_like = create_like(
-            session=session, post_id=like_data.PostId, user_id=like_data.UserId, reaction=like_data.reaction)
+            session=session,
+            post_id=post_id,
+            user_id=user_id,
+            reaction=data.reaction
+        )
+
         return created_like
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -32,7 +45,7 @@ async def like_post(like_data: LikeCreate, session: Session = Depends(get_db)):
 @router.get('/')
 async def get_likes_for_post(post_id: str, session: Session = Depends(get_db)):
     try:
-        post = get_post_by_id(session, post_id=post_id)
+        post = get_post_by_id(session=session, post_id=post_id)
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
 
@@ -42,11 +55,18 @@ async def get_likes_for_post(post_id: str, session: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete('/{post_id}/{user_id}/')
-async def unlike_post(post_id: str, user_id: str, session: Session = Depends(get_db)):
+@router.delete('/', dependencies=[Depends(get_current_active_user)])
+async def unlike_post(
+    post_id: str,
+    current_user: CurrentUser,
+    session: Session = Depends(get_db),
+):
     try:
-        user = get_user_by_username(session, user_id=user_id)
-        post = get_post_by_id(session, post_id=post_id)
+        user_id = current_user.id
+        username = current_user.username
+
+        post = get_post_by_id(session=session, post_id=post_id)
+        user = get_user_by_username(session=session, username=username)
 
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
@@ -54,7 +74,12 @@ async def unlike_post(post_id: str, user_id: str, session: Session = Depends(get
         if not post:
             raise HTTPException(status_code=404, detail="Post not found")
 
-        result = delete_like(session=session, post_id=post_id, user_id=user_id)
+        result = delete_like(
+            session=session,
+            post_id=post_id,
+            user_id=user_id
+        )
+
         if result:
             return {"message": "Like deleted successfully"}
         else:
