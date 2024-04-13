@@ -1,18 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from api.schemas.likes import LikeCreate
+from api.schemas.reactions import ReactionCreate
 from api.crud.likes import create_like, get_likes_by_post_id, delete_like
 from api.crud.posts import get_post_by_id
-from api.crud.users import get_user_by_username
+from api.crud.reactions import get_user_by_username
 from api.deps import get_current_active_user, get_db, CurrentUser
 
-router = APIRouter(prefix='/posts/{post_id}/likes', tags=['likes'])
+router = APIRouter(prefix='/posts/{post_id}/reactions', tags=['reactions'])
 
 
 @router.post('/', dependencies=[Depends(get_current_active_user)])
 async def post_like(
     post_id: str,
-    data: LikeCreate,
+    data: ReactionCreate,
     current_user: CurrentUser,
     session: Session = Depends(get_db),
 ):

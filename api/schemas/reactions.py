@@ -1,16 +1,16 @@
 from pydantic import BaseModel
 
 
-class LikeBase(BaseModel):
+class ReactionBase(BaseModel):
     userId: str
     reaction: str
 
 
-class LikeCreate(LikeBase):
+class ReactionCreate(ReactionBase):
     pass
 
 
-class Like(LikeBase):
+class Reaction(ReactionBase):
     PostId: str
 
     class Config:

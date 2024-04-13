@@ -1,5 +1,5 @@
 from core.security import SECRET_KEY, ALGORITHM, oauth2_scheme
-from api.crud.users import get_user_by_username
+from api.crud.reactions import get_user_by_username
 from api.schemas.token import TokenData
 from core.security import pwd_context
 from api.schemas.users import User

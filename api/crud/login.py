@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from api.crud.users import get_user_by_username
+from api.crud.reactions import get_user_by_username
 from core.security import verify_password
 
 
