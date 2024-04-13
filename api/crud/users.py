@@ -51,20 +51,7 @@ def create_super_user(session: Session, user: UserCreateSuperUser):
     return db_object
 
 
-# def update_user(session: Session, user: UserUpdateMe):
-#     existing_user = get_user_by_email(session, user.email)
-
-#     if existing_user and existing_user.id != user.id:
-#         raise HTTPException(status_code=400, detail="Email already in use")
-
-#     db_user = session.query(UserModel).filter(
-#         UserModel.username == user.username).first()
-
-#     if db_user:
-#         db_user.email = user.email
-#         db_user.username = user.username
-
-#         session.commit()
-#         session.refresh(db_user)
-
-#     return db_user
+def delete_user(session: Session, user: UserModel):
+    session.delete(user)
+    session.commit()
+    session.refresh(user)

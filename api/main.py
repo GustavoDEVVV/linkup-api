@@ -2,8 +2,8 @@ from fastapi import APIRouter
 
 from api.models.users import UserModel  # Não remova, dependencia de Base
 from api.models.posts import PostModel  # Não remova, dependencia de Base
-from api.models.likes import LikeModel  # Não remova, dependencia de Base
-from api.routes import login, users, posts, likes
+from api.models.likes import ReactionModel  # Não remova, dependencia de Base
+from api.routes import login, reactions, users, posts
 from core.database import Base, engine
 from core.init_data import init_db
 
@@ -14,7 +14,7 @@ api_router = APIRouter()
 api_router.include_router(login.router)
 api_router.include_router(users.router)
 api_router.include_router(posts.router)
-api_router.include_router(likes.router)
+api_router.include_router(reactions.router)
 
 
 @api_router.on_event('startup')
