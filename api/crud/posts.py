@@ -19,3 +19,6 @@ def insert_post(session: Session, username: str, post: PostCreate):
     session.refresh(db_post)
 
     return {"message": f"Post created"}
+
+def get_post_by_id(session: Session, post_id: str) -> PostModel:
+    return session.query(PostModel).filter(PostModel.id == post_id).first()
