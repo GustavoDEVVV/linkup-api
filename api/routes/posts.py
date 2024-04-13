@@ -34,5 +34,5 @@ async def create_new_post(post: PostCreate, username: str, session: Session = De
         return HTTPException(status_code=500, detail=str(e))
 
 @router.delete('/{username}/post/')
-async def delete_post(username: str, post: PostCreate, db: Session = Depends(get_db)):
+async def delete_post(username: str, post: PostCreate, session: Session = Depends(get_db)):
     return delete_post(db=db, delete=post, username=username)
