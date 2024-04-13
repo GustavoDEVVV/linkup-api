@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from api.deps import get_current_active_superuser, CurrentUser, get_current_active_user
 from api.schemas.users import UserCreate, UserOutPut, UserUpdateMe
-from api.crud.reactions import get_user_by_username, create_user, select_users
+from api.crud.users import get_user_by_username, create_user, select_users
 from api.models.users import UserModel
 
 from core.config import settings

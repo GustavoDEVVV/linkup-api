@@ -1,7 +1,7 @@
 from core.config import settings
 from core.database import get_db
 from api.models.users import UserModel
-from api.crud.reactions import create_super_user
+from api.crud.users import create_super_user
 from api.schemas.users import UserCreateSuperUser
 
 

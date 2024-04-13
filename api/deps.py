@@ -8,7 +8,7 @@ from core.security import oauth2_scheme, ALGORITHM, SECRET_KEY
 from api.schemas.users import User
 from api.models.users import UserModel
 from api.schemas.token import TokenData
-from api.crud.reactions import get_user_by_username
+from api.crud.users import get_user_by_username
 from core.database import get_db
 
 

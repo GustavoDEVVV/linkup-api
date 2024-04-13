@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(
 
 from api.schemas.users import UserCreate
 from api.models.users import UserModel
-from api.crud.reactions import create_user
+from api.crud.users import create_user
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import unittest
