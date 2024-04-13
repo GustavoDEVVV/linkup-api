@@ -18,7 +18,7 @@ class ReactionType(String):
         return value
 
 
-class LikeModel(Base):
+class ReactionModel(Base):
     __tablename__ = 'likes'
 
     postId = Column(
