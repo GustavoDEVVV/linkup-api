@@ -117,10 +117,12 @@ async def update_me(data: UserUpdateMe,
 
     return data
 
-@router.delete('/{username}', dependencies=[Depends(get_current_active_superuser)]) 
-async def delete_user_endpoint(username: str, session: Session = Depends(get_db)):
+
+@router.delete('/{username}', dependencies=[Depends(get_current_active_superuser)])
+async def remove_user(username: str, session: Session = Depends(get_db)):
     db_user = get_user_by_username(session=session, username=username)
     if db_user is None:
         raise HTTPException(status_code=404, detail='Usuário não encontrado')
+
     delete_user(session=session, user=db_user)
     return {"message": f"Usuário {username} deletado."}
