@@ -18,7 +18,7 @@ def insert_post(session: Session, username: str, post: PostCreate):
     session.commit()
     session.refresh(db_post)
 
-    return {"message": f"Post created"}
+    return db_post
 
 
 def delete_post(session: Session, post: PostCreate):
