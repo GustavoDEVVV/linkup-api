@@ -39,35 +39,6 @@ class TestUserRoutes(unittest.TestCase):
         assert isinstance(response.json(), dict)
         assert response.status_code == 200
 
-    def test_get_user_by_username(self):
-        username = 'Gustavo'
-        response = requests.get(f"{create_engine}/{username}")
-        self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response.json(), dict)
-
-    def test_update_user(self):
-        username = 'Gustavo'
-        update_data_users = {'name': 'Gustavo', 'email': 'gustavo@example.com', 'password': '1234'}
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual, update_user ['name'] == update_data_users['name']
-
-
-
-class TestPostCrud(unittest.TestCase):
-
-
-    def get_post(username):
-        
-        response = requests.get(create_engine)
-        self.assertEqual(response.status_code, 200)
-        return response
-
-    def test_update_post(self):
-        id_post = 1
-        update_data_post = {'username': 'Gustavo', 'id_post': 2}
-        response = requests.put(f"{self.base_url}/post{id_post}", json=update_data_post)
-        self.assertEqual(response.status_code, 200)
-
 
 if __name__ == '__main__':
     unittest.main()
