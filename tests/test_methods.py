@@ -119,5 +119,7 @@ class TestPostCrud(unittest.TestCase):
         self.assertIsNotNone(created_post.id)
 
 
+
 if __name__ == '__main__':
     unittest.main()
+
