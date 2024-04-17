@@ -41,7 +41,7 @@ class TestUserRoutes(unittest.TestCase):
 
     def test_get_user_by_username(self):
         username = 'Gustavo'
-        response = requests.get(f"{create_engine}/{username}")
+        response = requests.get(f"{base_url}/{url_one}")
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json(), dict)
 
@@ -49,7 +49,7 @@ class TestUserRoutes(unittest.TestCase):
         username = 'Gustavo'
         update_data_users = {'name': 'Gustavo', 'email': 'gustavo@example.com', 'password': '1234'}
         self.assertEqual(response.status_code, 200)
-        self.assertEqual, update_user ['name'] == update_data_users['name']
+        self.assertEqual, test_update_user ['name'] == update_data_users['name']
 
 
 
@@ -58,14 +58,14 @@ class TestPostCrud(unittest.TestCase):
 
     def get_post(username):
         
-        response = requests.get(create_engine)
+        response = requests.get(base_url)
         self.assertEqual(response.status_code, 200)
         return response
 
     def test_update_post(self):
         id_post = 1
         update_data_post = {'username': 'Gustavo', 'id_post': 2}
-        response = requests.put(f"{self.base_url}/post{id_post}", json=update_data_post)
+        response = requests.put(f"{self.base_url}/post{post_id}", json=update_data_post)
         self.assertEqual(response.status_code, 200)
 
 
