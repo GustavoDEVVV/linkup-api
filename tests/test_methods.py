@@ -13,7 +13,10 @@ from api.models.posts import PostModel
 from api.crud.users import (create_super_user,
                             create_user,
                             delete_user,
-                            get_user
+                            get_user,
+                            get_user_by_email,
+                            get_user_by_username,
+                            select_users,
                             )
 
 from api.crud.posts import (insert_post, delete_post)
@@ -73,6 +76,45 @@ class TestUserCrud(unittest.TestCase):
         deleted_user = get_user(session=self.session, user_id=created_user.id)
 
         self.assertIsNone(deleted_user)
+
+
+    def test_get_user_by_email(self):
+        user = UserCreate(
+            email=self.test_email,
+            username=self.test_username,
+            password=self.test_password,
+        )
+
+        created_user = create_user(session=self.session, user=user)
+        user_by_email = get_user_by_email(session=self.session, email=created_user.email)
+
+        self.assertIsNotNone(user_by_email.id)
+
+
+    def test_get_user_by_username(self):
+        user = UserCreate(
+            email=self.test_email,
+            username=self.test_username,
+            password=self.test_password,
+        )
+
+        created_user = create_user(session=self.session, user=user)
+        user_by_username = get_user_by_username(session=self.session, username=created_user.username)
+
+        self.assertIsNotNone(user_by_username.id)
+
+
+    def test_select_users(self):
+        user = UserCreate(
+            email=self.test_email,
+            username=self.test_username,
+            password=self.test_password,
+        )
+        create_user(session=self.session, user=user)
+
+        selected_users = select_users(session=self.session, skip=0, limit=100)
+
+        self.assertIsNotNone(selected_users)
 
 
 class TestPostCrud(unittest.TestCase):
