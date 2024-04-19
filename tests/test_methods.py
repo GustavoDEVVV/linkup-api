@@ -154,12 +154,12 @@ class TestPostCrud(unittest.TestCase):
             title=self.test_title,
         )
 
-        created_user = create_user(session=self.session,
-                                user=user)
+        created_user = create_user(session=self.session, 
+                                   user=user)
 
-        created_post = insert_post(session=self.session,
-                                username=created_user.username,
-                                post=post)
+        created_post = insert_post(session=self.session, 
+                                   username=created_user.username, 
+                                   post=post)
 
         self.assertIsNotNone(created_post.id)
 
