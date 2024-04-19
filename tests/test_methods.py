@@ -9,7 +9,9 @@ sys.path.append(os.path.dirname(os.path.dirname(
 from api.schemas.users import UserCreate, UserCreateSuperUser
 from api.schemas.posts import PostCreate
 from api.models.users import UserModel
+from api.schemas.reactions import ReactionCreate
 from api.models.posts import PostModel
+from api.models.likes import ReactionModel, ReactionType
 from api.crud.users import (create_super_user,
                             create_user,
                             delete_user,
@@ -20,6 +22,7 @@ from api.crud.users import (create_super_user,
                             )
 
 from api.crud.posts import (insert_post, delete_post)
+from api.crud.reactions import create_like, delete_like, get_likes_by_post_id, get_users_who_liked_post
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -160,8 +163,149 @@ class TestPostCrud(unittest.TestCase):
 
         self.assertIsNotNone(created_post.id)
 
+class TestReactionCrud(unittest.TestCase):
+    def setUp(self):
+        engine = create_engine('sqlite:///./test.sqlite3')
+        Session = sessionmaker(bind=engine)
+        self.session = Session()
 
+        self.test_username = 'test'
+        self.test_password = '123@123'
+        self.test_email = 'test@email.com'
+
+        self.test_title = 'Testando titulo!'
+        self.test_description = 'Testando descrição!'
+
+        self.test_type = 'grr'
+
+        UserModel.metadata.drop_all(engine)
+        UserModel.metadata.create_all(engine)
+
+
+    def tearDown(self):
+        self.session.close()
+
+    def test_create_reaction(self):
+        user = UserCreate(
+            email=self.test_email,
+            username=self.test_username,
+            password=self.test_password,
+
+        )
+
+        post = PostCreate(
+            description=self.test_description,
+            title=self.test_title,
+        )
+
+
+        created_user = create_user(session=self.session,
+                                user=user)
+
+        created_post = insert_post(session=self.session,
+                                username=created_user.username,
+                                post=post)
+
+        created_reaction = create_like(self.session,
+                                    user_id=created_user.id,
+                                    post_id=created_post.id,
+                                    reaction=self.test_type)
+
+        self.assertIsNotNone(created_reaction.userId)
+
+    def test_delete_reaction(self):
+        user = UserCreate(
+            email=self.test_email,
+            username=self.test_username,
+            password=self.test_password,
+
+        )
+
+        post = PostCreate(
+            description=self.test_description,
+            title=self.test_title,
+        )
+
+
+        created_user = create_user(session=self.session,
+                                user=user)
+
+        created_post = insert_post(session=self.session,
+                                username=created_user.username,
+                                post=post)
+
+        created_reaction = create_like(self.session,
+                                    user_id=created_user.id,
+                                    post_id=created_post.id,
+                                    reaction=self.test_type)
+
+        deleted_reaction = delete_like(self.session,
+                                    user_id=created_user.id,
+                                    post_id=created_post.id)
+
+        self.assertEqual(deleted_reaction, {"message": "Like deleted successfully"})
+
+    def test_get_likes_by_post_id(self):
+        user = UserCreate(
+            email=self.test_email,
+            username=self.test_username,
+            password=self.test_password,
+
+        )
+
+        post = PostCreate(
+            description=self.test_description,
+            title=self.test_title,
+        )
+
+
+        created_user = create_user(session=self.session,
+                                user=user)
+
+        created_post = insert_post(session=self.session,
+                                username=created_user.username,
+                                post=post)
+
+        created_reaction = create_like(self.session,
+                                    user_id=created_user.id,
+                                    post_id=created_post.id,
+                                    reaction=self.test_type)
+
+        get_likes = get_likes_by_post_id(self.session,
+                                        post_id=created_post.id)
+
+        self.assertIsNotNone(get_likes)
+
+    def test_get_users_who_liked_post(self):
+        user = UserCreate(
+            email=self.test_email,
+            username=self.test_username,
+            password=self.test_password,
+    
+        )
+    
+        post = PostCreate(
+            description=self.test_description,
+            title=self.test_title,
+        )
+    
+    
+        created_user = create_user(session=self.session,
+                                user=user)
+    
+        created_post = insert_post(session=self.session,
+                                username=created_user.username,
+                                post=post)
+    
+        created_reaction = create_like(self.session,
+                                    user_id=created_user.id,
+                                    post_id=created_post.id,
+                                    reaction=self.test_type)
+    
+        get_users_who_liked = get_users_who_liked_post(self.session,
+                                            post_id=created_post.id)
+  
+        self.assertIsNotNone(get_users_who_liked) 
 
 if __name__ == '__main__':
-    unittest.main()
-
+  unittest.main()
