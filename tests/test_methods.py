@@ -18,7 +18,7 @@ from api.crud.users import (create_super_user,
                             select_users,
                             )
 
-from api.crud.posts import (insert_post, delete_post)
+from api.crud.posts import insert_post
 from api.crud.reactions import create_like, delete_like, get_likes_by_post_id, get_users_who_liked_post
 
 from sqlalchemy import create_engine
