@@ -6,6 +6,7 @@ from api.schemas.posts import PostCreate
 def select_posts(session: Session, username: str):
     return session.query(PostModel).filter(PostModel.owner_username == username).all()
 
+
 def insert_post(session: Session, username: str, post: PostCreate):
     db_post = PostModel(
         title=post.title,
@@ -17,14 +18,13 @@ def insert_post(session: Session, username: str, post: PostCreate):
     session.commit()
     session.refresh(db_post)
 
-    return {"message": f"Post created"}
+    return db_post
 
-def delete_post(session: Session, post: PostCreate, username: str):
-    db.delete(PostCreate)
-    db.refresh(PostCreate)
 
-    return{"message": "User's deleted post = {db_post.id}"}
+def delete_post(session: Session, post: PostCreate):
+    session.delete(post)
+    session.commit()
+
 
 def get_post_by_id(session: Session,  post_id: str):
     return session.query(PostModel).filter(PostModel.id == post_id).first()
-
