@@ -2,11 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from api.deps import get_current_active_superuser, CurrentUser, get_current_active_user
-from api.schemas.users import UserCreate, UserOutPut, UserUpdateMe
 from api.crud.users import get_user_by_username, create_user, select_users, delete_user
+from api.schemas.users import UserCreate, UserUpdateMe
 from api.models.users import UserModel
 
-from core.config import settings
 from core.database import get_db
 
 router = APIRouter(
@@ -55,34 +54,6 @@ async def read_user(skip: int = 0, limit: int = 100, session: Session = Depends(
             return user_posts
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))
-
-
-@router.post('/signup', response_model=UserOutPut)
-async def register_user(user_in: UserCreate, session: Session = Depends(get_db)):
-
-    if not settings.USERS_OPEN_REGISTRATION:
-        raise HTTPException(
-            status_code=403,
-            detail="Open user registration is forbidden on this server",
-        )
-
-    user = get_user_by_username(session=session, username=user_in.username)
-
-    if user:
-        raise HTTPException(
-            status_code=400,
-            detail="The user with this email already exists in the system",
-        )
-
-    user = create_user(session, user_in)
-
-    user_response = UserOutPut(
-        id=user.id,
-        username=user.username,
-        email=user.email,
-    )
-
-    return user_response
 
 
 @router.put('/{username}', dependencies=[Depends(get_current_active_user)])
