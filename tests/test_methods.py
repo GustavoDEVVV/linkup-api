@@ -18,7 +18,7 @@ from api.crud.users import (create_super_user,
                             select_users,
                             )
 
-from api.crud.posts import insert_post
+from api.crud.posts import (insert_post, delete_post)
 from api.crud.reactions import create_like, delete_like, get_likes_by_post_id, get_users_who_liked_post
 
 from sqlalchemy import create_engine
@@ -145,20 +145,6 @@ class TestPostCrud(unittest.TestCase):
                                    post=post)
 
         self.assertIsNotNone(created_post.id)
-
-        def get_post(self):
-            post = PostCreate(email=self.test_email,
-                          username=self.test_username,
-                          password=self.test_password)
-            create_post = insert_post(session=self.session, post=post)
-
-def test_update_post(self):
-        new_description = 'Nova descrição!'
-        updated_post = update_post(session=self.session, 
-                                   post_id=self.created_post.id, 
-                                   description=new_description)
-        self.assertEqual(updated_post.description, new_description)
-
 
 class TestReactionCrud(unittest.TestCase):
     def setUp(self):
