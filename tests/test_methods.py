@@ -146,6 +146,20 @@ class TestPostCrud(unittest.TestCase):
 
         self.assertIsNotNone(created_post.id)
 
+        def get_post(self):
+            post = PostCreate(email=self.test_email,
+                          username=self.test_username,
+                          password=self.test_password)
+            create_post = insert_post(session=self.session, post=post)
+
+def test_update_post(self):
+        new_description = 'Nova descrição!'
+        updated_post = update_post(session=self.session, 
+                                   post_id=self.created_post.id, 
+                                   description=new_description)
+        self.assertEqual(updated_post.description, new_description)
+
+
 class TestReactionCrud(unittest.TestCase):
     def setUp(self):
         engine = create_engine('sqlite:///./test.sqlite3')
