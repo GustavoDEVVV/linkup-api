@@ -123,6 +123,7 @@ class TestPostCrud(unittest.TestCase):
 
         UserModel.metadata.drop_all(engine)
         UserModel.metadata.create_all(engine)
+        
 
 
     def tearDown(self):
@@ -145,6 +146,102 @@ class TestPostCrud(unittest.TestCase):
                                    post=post)
 
         self.assertIsNotNone(created_post.id)
+        
+    def test_create_post(self):
+    user = UserCreate(
+        email=self.test_email,
+        username=self.test_username,
+        password=self.test_password,
+
+    )
+
+    post = PostCreate(
+        description=self.test_description,
+        title=self.test_title,
+    )
+
+    created_user = create_user(session=self.session,
+                               user=user)
+
+    created_post = insert_post(session=self.session,
+                               username=created_user.username,
+                               post=post)
+
+    self.assertIsNotNone(created_post.id)
+
+    def test_get_post_by_id(self):
+    user = UserCreate(
+        email=self.test_email,
+        username=self.test_username,
+        password=self.test_password,
+
+    )
+
+    post = PostCreate(
+        description=self.test_description,
+        title=self.test_title,
+    )
+
+    created_user = create_user(session=self.session,
+       user=user)
+
+    created_post = insert_post(session=self.session,
+     username=created_user.username,
+     post=post)
+
+    post_by_id = get_post_by_id(session=self.session, post_id=created_post.id)
+
+    self.assertIsNotNone(post_by_id)
+
+    def test_delete_user(self):
+    user = UserCreate(
+      email=self.test_email,
+      username=self.test_username,
+      password=self.test_password,
+
+    )
+
+    post = PostCreate(
+      description=self.test_description,
+      title=self.test_title,
+    )
+
+    created_user = create_user(session=self.session,
+     user=user)
+
+    created_post = insert_post(session=self.session,
+    username=created_user.username,
+    post=post)
+
+    delete_post(session=self.session, post=created_post)
+
+    deleted_post = get_post_by_id(session=self.session, post_id=created_post.id)
+    self.assertIsNone(deleted_post)
+
+
+    def test_select_post(self):
+    user = UserCreate(
+      email=self.test_email,
+      username=self.test_username,
+      password=self.test_password,
+
+    )
+
+    post = PostCreate(
+      description=self.test_description,
+      title=self.test_title,
+    )
+
+    created_user = create_user(session=self.session,
+     user=user)
+
+    insert_post(session=self.session,
+    username=created_user.username,
+    post=post)
+
+    selected_posts = select_posts(session=self.session, username=created_user.username)
+
+    self.assertIsNotNone(selected_posts)
 
 class TestReactionCrud(unittest.TestCase):
     def setUp(self):
