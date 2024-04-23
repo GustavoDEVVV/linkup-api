@@ -92,3 +92,16 @@ Alternatively, for interactive documentation, navigate to:
 | Caio Vinicius     | 8       |
 | Esdras Brainer    | 2       |
 | Pedro Freitas     | l       |
+
+#### User Stories
+
+| Como usuário eu gostaria de... |
+| ------------------------------ |
+| Criar uma conta                |
+| Acessar minha conta            |
+| Editar dados da minha conta    |
+| Criar publicações              |
+| Editar publicações             |
+| Excluir publicações            |
+| Reagir a publicações de outros |
+| Editar minha reação            |

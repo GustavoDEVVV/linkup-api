@@ -9,7 +9,7 @@ SECRET_KEY = '62cb19571d5aba89bbcc372c56c336805870b1d649677f631fcb3b4ed89f5524'
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 
 
 def get_password_hash(password):
