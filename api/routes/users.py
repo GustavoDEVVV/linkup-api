@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from api.deps import get_current_active_superuser, CurrentUser, get_current_active_user
-from api.crud.users import get_user_by_username, create_user, select_users, delete_user
-from api.schemas.users import UserCreate, UserUpdateMe
+from api.crud.users import get_user_by_username, select_users, delete_user, create_super_user
+from api.schemas.users import UserUpdateMe, UserCreateSuperUser
 from api.models.users import UserModel
 
 from core.database import get_db
@@ -15,11 +15,11 @@ router = APIRouter(
 
 
 @router.post('/', dependencies=[Depends(get_current_active_superuser)])
-async def create_new_user(user: UserCreate, session: Session = Depends(get_db)):
+async def create_new_user(user: UserCreateSuperUser, session: Session = Depends(get_db)):
     db_user = get_user_by_username(session=session, username=user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return create_user(session, user)
+    return create_super_user(session, user)
 
 
 @router.get('/{username}', dependencies=[Depends(get_current_active_user)])
@@ -31,7 +31,7 @@ async def read_user(username: str, session: Session = Depends(get_db)):
 
 
 @router.get('/', dependencies=[Depends(get_current_active_superuser)])
-async def read_user(skip: int = 0, limit: int = 100, session: Session = Depends(get_db)):
+async def read_users(skip: int = 0, limit: int = 100, session: Session = Depends(get_db)):
     try:
         user_posts = []
         users = select_users(session, skip=skip, limit=limit)
@@ -51,7 +51,7 @@ async def read_user(skip: int = 0, limit: int = 100, session: Session = Depends(
                 post.pop('id')
                 post.pop('owner_username')
 
-            return user_posts
+        return user_posts
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))
 
