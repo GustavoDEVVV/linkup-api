@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from api.deps import get_current_active_superuser, CurrentUser, get_current_active_user
-from api.crud.users import get_user_by_username, select_users, delete_user, create_super_user
+from api.crud.users import get_user_by_username, select_users, delete_user, create_super_user, update_user
 from api.schemas.users import UserUpdateMe, UserCreateSuperUser
 from api.models.users import UserModel
 
@@ -65,35 +65,36 @@ async def update_me(data: UserUpdateMe,
     if username != current_user.username:
         raise HTTPException(status_code=404, detail='Forbidden')
 
-    db_user = session.query(UserModel).filter(
-        UserModel.username == username).first()
+    updated_user = update_user(session=session, data=data, username=username)
+    # db_user = session.query(UserModel).filter(
+    #     UserModel.username == username).first()
 
-    if data.email != db_user.email:
-        existing_user_email = session.query(UserModel).filter(
-            UserModel.email == data.email).first()
-        if existing_user_email:
-            raise HTTPException(status_code=400, detail='Email already in use')
+    # if data.email != db_user.email:
+    #     existing_user_email = session.query(UserModel).filter(
+    #         UserModel.email == data.email).first()
+    #     if existing_user_email:
+    #         raise HTTPException(status_code=400, detail='Email already in use')
 
-    if data.username != db_user.username:
-        existing_user_username = session.query(UserModel).filter(
-            UserModel.username == data.username).first()
-        if existing_user_username:
-            raise HTTPException(
-                status_code=400, detail='Username already in use')
+    # if data.username != db_user.username:
+    #     existing_user_username = session.query(UserModel).filter(
+    #         UserModel.username == data.username).first()
+    #     if existing_user_username:
+    #         raise HTTPException(
+    #             status_code=400, detail='Username already in use')
 
-    db_user.username = data.username
-    db_user.email = data.email
-    session.commit()
-    session.refresh(db_user)
+    # db_user.username = data.username
+    # db_user.email = data.email
+    # session.commit()
+    # session.refresh(db_user)
 
-    return data
+    return updated_user
 
 
 @router.delete('/{username}', dependencies=[Depends(get_current_active_superuser)])
 async def remove_user(username: str, session: Session = Depends(get_db)):
     db_user = get_user_by_username(session=session, username=username)
     if db_user is None:
-        raise HTTPException(status_code=404, detail='Usuário não encontrado')
+        raise HTTPException(status_code=404, detail='User not found')
 
     delete_user(session=session, user=db_user)
-    return {"message": f"Usuário {username} deletado."}
+    return {"message": f"User {username} deleted."}

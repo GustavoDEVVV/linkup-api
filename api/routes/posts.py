@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from core.database import get_db
 
-from api.deps import get_current_active_superuser, CurrentUser, get_current_active_user
-from api.crud.posts import select_posts, insert_post, delete_post, get_post_by_id
-from api.schemas.posts import PostCreate
+from api.deps import CurrentUser, get_current_active_user
+from api.crud.posts import select_posts, insert_post, delete_post, get_post_by_id, update_post
+from api.schemas.posts import PostCreate, PostUpdate
 
 router = APIRouter(
     prefix='/users',
@@ -35,7 +35,7 @@ async def create_new_post(post: PostCreate, current_user: CurrentUser, session: 
         return HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete('/{username}/post/{post_id}', dependencies=[Depends(get_current_active_user)])
+@router.delete('/{username}/posts/{post_id}', dependencies=[Depends(get_current_active_user)])
 async def remove_post(post_id: str, session: Session = Depends(get_db)):
     db_post = get_post_by_id(session=session, post_id=post_id)
 
@@ -43,4 +43,20 @@ async def remove_post(post_id: str, session: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail='Post not found')
 
     delete_post(session=session, post=db_post)
-    return {"message": f"Post deleted."}
+    return {"message": "Post deleted."}
+
+
+@router.put('/{username}/posts/{post_id}', dependencies=[Depends(get_current_active_user)])
+async def put_post(post_id: str,
+                   data: PostUpdate,
+                   session: Session = Depends(get_db)
+                   ):
+
+    db_post = get_post_by_id(session=session, post_id=post_id)
+
+    if db_post is None:
+        raise HTTPException(status_code=404, detail='Post not found')
+
+    db_post = update_post(session=session, post_id=post_id, data=data)
+
+    return db_post

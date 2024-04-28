@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from api.models.users import UserModel  # Não remova, dependencia de Base
 from api.models.posts import PostModel  # Não remova, dependencia de Base
-from api.models.likes import ReactionModel  # Não remova, dependencia de Base
+from api.models.reactions import ReactionModel  # Não remova, dependencia de Base
 from api.routes import auth, reactions, users, posts
 from core.database import Base, engine
 from core.init_data import init_db

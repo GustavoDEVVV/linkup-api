@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from api.schemas.reactions import ReactionCreate
+from api.schemas.reactions import ReactionCreate, ReactionUpdate
 from api.crud.posts import get_post_by_id
 from api.crud.users import get_user_by_username
 from api.deps import get_current_active_user, get_db, CurrentUser
-from api.crud.reactions import create_like, get_likes_by_post_id, delete_like
+from api.crud.reactions import create_like, get_likes_by_post_id, delete_like, update_reaction
 
 router = APIRouter(prefix='/posts/{post_id}/reactions', tags=['reactions'])
 
@@ -86,3 +86,16 @@ async def unlike_post(
             raise HTTPException(status_code=404, detail="Like not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put('/', dependencies=[Depends(get_current_active_user)])
+async def put_reaction(post_id: str,
+                       data: ReactionUpdate,
+                       current_user: CurrentUser,
+                       session: Session = Depends(get_db)):
+
+    user_id = current_user.id
+    post_updated = update_reaction(
+        session=session, data=data, post_id=post_id, user_id=user_id)
+
+    return post_updated
