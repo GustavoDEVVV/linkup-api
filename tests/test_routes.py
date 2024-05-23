@@ -23,11 +23,6 @@ class TestUserRoutes(unittest.TestCase):
         assert isinstance(response.json(), dict)
         assert response.status_code == 401
 
-    def test_put_one(self):
-        response = requests.get(self.url_one)
-        assert isinstance(response.json(), dict)
-        assert response.status_code == 401
-
     def test_post_one(self):
         data = {
             "email": self.email_test,

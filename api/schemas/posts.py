@@ -6,6 +6,10 @@ class PostBase(BaseModel):
     description: str | None = None
 
 
+class PostUpdate(PostBase):
+    pass
+
+
 class PostCreate(PostBase):
     pass
 

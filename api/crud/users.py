@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from api.models.users import UserModel
-from api.schemas.users import UserCreate, UserCreateSuperUser
+from api.schemas.users import UserCreate, UserCreateSuperUser, UserUpdateMe
 from core.security import get_password_hash
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from core.database import get_db
 
 
@@ -54,3 +54,30 @@ def create_super_user(session: Session, user: UserCreateSuperUser):
 def delete_user(session: Session, user: UserModel):
     session.delete(user)
     session.commit()
+
+
+def update_user(session: Session, data: UserUpdateMe, username: str):
+    db_user = session.query(UserModel).filter(
+        UserModel.username == username).first()
+
+    if data.email != db_user.email:
+        existing_user_email = session.query(UserModel).filter(
+            UserModel.email == data.email).first()
+
+        if existing_user_email:
+            raise HTTPException(status_code=400, detail='Email already in use')
+
+    if data.username != db_user.username:
+        existing_user_username = session.query(UserModel).filter(
+            UserModel.username == data.username).first()
+
+        if existing_user_username:
+            raise HTTPException(
+                status_code=400, detail='Username already in use')
+
+    db_user.username = data.username
+    db_user.email = data.email
+    session.commit()
+    session.refresh(db_user)
+
+    return db_user

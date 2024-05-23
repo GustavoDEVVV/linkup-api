@@ -10,6 +10,10 @@ class ReactionCreate(ReactionBase):
     pass
 
 
+class ReactionUpdate(BaseModel):
+    reaction: str
+
+
 class Reaction(ReactionBase):
     PostId: str
 

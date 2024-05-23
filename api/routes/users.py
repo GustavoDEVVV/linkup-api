@@ -2,11 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from api.deps import get_current_active_superuser, CurrentUser, get_current_active_user
-from api.schemas.users import UserCreate, UserOutPut, UserUpdateMe
-from api.crud.users import get_user_by_username, create_user, select_users, delete_user
+from api.crud.users import get_user_by_username, select_users, delete_user, create_super_user, update_user
+from api.schemas.users import UserUpdateMe, UserCreateSuperUser
 from api.models.users import UserModel
 
-from core.config import settings
 from core.database import get_db
 
 router = APIRouter(
@@ -16,11 +15,11 @@ router = APIRouter(
 
 
 @router.post('/', dependencies=[Depends(get_current_active_superuser)])
-async def create_new_user(user: UserCreate, session: Session = Depends(get_db)):
+async def create_new_user(user: UserCreateSuperUser, session: Session = Depends(get_db)):
     db_user = get_user_by_username(session=session, username=user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return create_user(session, user)
+    return create_super_user(session, user)
 
 
 @router.get('/{username}', dependencies=[Depends(get_current_active_user)])
@@ -32,7 +31,7 @@ async def read_user(username: str, session: Session = Depends(get_db)):
 
 
 @router.get('/', dependencies=[Depends(get_current_active_superuser)])
-async def read_user(skip: int = 0, limit: int = 100, session: Session = Depends(get_db)):
+async def read_users(skip: int = 0, limit: int = 100, session: Session = Depends(get_db)):
     try:
         user_posts = []
         users = select_users(session, skip=skip, limit=limit)
@@ -52,37 +51,9 @@ async def read_user(skip: int = 0, limit: int = 100, session: Session = Depends(
                 post.pop('id')
                 post.pop('owner_username')
 
-            return user_posts
+        return user_posts
     except Exception as e:
         return HTTPException(status_code=500, detail=str(e))
-
-
-@router.post('/signup', response_model=UserOutPut)
-async def register_user(user_in: UserCreate, session: Session = Depends(get_db)):
-
-    if not settings.USERS_OPEN_REGISTRATION:
-        raise HTTPException(
-            status_code=403,
-            detail="Open user registration is forbidden on this server",
-        )
-
-    user = get_user_by_username(session=session, username=user_in.username)
-
-    if user:
-        raise HTTPException(
-            status_code=400,
-            detail="The user with this email already exists in the system",
-        )
-
-    user = create_user(session, user_in)
-
-    user_response = UserOutPut(
-        id=user.id,
-        username=user.username,
-        email=user.email,
-    )
-
-    return user_response
 
 
 @router.put('/{username}', dependencies=[Depends(get_current_active_user)])
@@ -94,35 +65,36 @@ async def update_me(data: UserUpdateMe,
     if username != current_user.username:
         raise HTTPException(status_code=404, detail='Forbidden')
 
-    db_user = session.query(UserModel).filter(
-        UserModel.username == username).first()
+    updated_user = update_user(session=session, data=data, username=username)
+    # db_user = session.query(UserModel).filter(
+    #     UserModel.username == username).first()
 
-    if data.email != db_user.email:
-        existing_user_email = session.query(UserModel).filter(
-            UserModel.email == data.email).first()
-        if existing_user_email:
-            raise HTTPException(status_code=400, detail='Email already in use')
+    # if data.email != db_user.email:
+    #     existing_user_email = session.query(UserModel).filter(
+    #         UserModel.email == data.email).first()
+    #     if existing_user_email:
+    #         raise HTTPException(status_code=400, detail='Email already in use')
 
-    if data.username != db_user.username:
-        existing_user_username = session.query(UserModel).filter(
-            UserModel.username == data.username).first()
-        if existing_user_username:
-            raise HTTPException(
-                status_code=400, detail='Username already in use')
+    # if data.username != db_user.username:
+    #     existing_user_username = session.query(UserModel).filter(
+    #         UserModel.username == data.username).first()
+    #     if existing_user_username:
+    #         raise HTTPException(
+    #             status_code=400, detail='Username already in use')
 
-    db_user.username = data.username
-    db_user.email = data.email
-    session.commit()
-    session.refresh(db_user)
+    # db_user.username = data.username
+    # db_user.email = data.email
+    # session.commit()
+    # session.refresh(db_user)
 
-    return data
+    return updated_user
 
 
 @router.delete('/{username}', dependencies=[Depends(get_current_active_superuser)])
 async def remove_user(username: str, session: Session = Depends(get_db)):
     db_user = get_user_by_username(session=session, username=username)
     if db_user is None:
-        raise HTTPException(status_code=404, detail='Usuário não encontrado')
+        raise HTTPException(status_code=404, detail='User not found')
 
     delete_user(session=session, user=db_user)
-    return {"message": f"Usuário {username} deletado."}
+    return {"message": f"User {username} deleted."}
