@@ -11,7 +11,9 @@ router = APIRouter(
     tags=['posts']
 )
 
-
+response = requests.get(self.base_url)
+        assert isinstance(response.json(), dict)
+        assert response.status_code == 401
 @router.get('/{username}/posts')
 async def read_posts(username: str, session: Session = Depends(get_db)):
     try:
